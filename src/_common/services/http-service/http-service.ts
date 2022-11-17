@@ -1,17 +1,16 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import fs from "node:fs"
-import path from "node:path"
 import https from "node:https"
 
 import * as core from 'express-serve-static-core';
 import * as http from 'http';
-import { authRoutes } from '../../../Auth/auth-router';
-import { blogsRoutes } from '../../../Blogs/blogs-router';
-import { commentsRoutes } from '../../../Comments/comments-router';
-import { postsRoutes } from '../../../Posts/posts-router';
-import { testingRoutes } from '../../../Testing/testing-router';
-import { usersRoutes } from '../../../Users/users-router';
+import { authRouter } from '../../../Auth/Authentication/auth--router';
+import { blogsRouter } from '../../../Blogs/blogs--router';
+import { commentsRouter } from '../../../Comments/comments--router';
+import { postsRouter } from '../../../Posts/posts--router';
+import { testingRouter } from '../../../Testing/testing-router';
+import { usersRouter } from '../../../Users/users--router';
 
 
 class HttpService {
@@ -61,28 +60,29 @@ class HttpService {
 
         this.httpsServer = httpsServer.listen(this.httpsPort, () => {
             console.log(`HTTPS Server running on port ${this.httpsPort}`);
-        });   
+        });
 
     }
     setMiddlewares() {
         this.app.use(express.json())
         this.app.use(cookieParser())
+        this.app.set('trust proxy', true) // Для получения корректного ip-адреса из req.ip
     }
     setRoutes() {
         this.app.use([
-            testingRoutes,
-            blogsRoutes,
-            postsRoutes,
-            usersRoutes,
-            authRoutes,
-            commentsRoutes,
+            testingRouter,
+            blogsRouter,
+            postsRouter,
+            usersRouter,
+            authRouter,
+            commentsRouter,
         ])
     }
     stopServer() {
         this.httpServer.close()
         this.httpsServer.close()
     }
- 
+
 
 }
 //@ts-ignore

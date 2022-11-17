@@ -1,11 +1,10 @@
-import { Filter } from 'mongodb';
-import mongoDbAdapter from '../_common/services/mongoDb-service/mongoDb-adapter';
-import { AdapterType } from '../_common/services/mongoDb-service/types';
-import Repository from '../_common/abstractions/Repository/Repository';
-import registrationCodeRepository from './registrationCode-repository';
-import { RegistrationCodeViewModel } from './types';
+import mongoDbAdapter from '../../_common/services/mongoDb-service/mongoDb-adapter';
+import { AdapterType } from '../../_common/services/mongoDb-service/types';
+import Repository from '../../_common/abstractions/Repository/Repository';
+import registrationCodeRepository from '../Registration/registration-repository';
+import {RegistrationCodeViewModel} from "../Registration/registration-types"
 
-
+/** Hash Password */
 class AuthRepository extends Repository {
     constructor(collectionName: string, dataService: AdapterType) { super(collectionName, dataService) }
 

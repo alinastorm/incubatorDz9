@@ -1,25 +1,17 @@
 //TODO реализовать удаление не активированных пользователей
 //TODO реализовать удаление link code активации
 
-import tokensRepository from "../../Auth/tokens-repository"
-import { RottenToken } from "../../Auth/types"
+import { deleteAllCanceledTokens } from "../../Auth/Tokenization/RottenTokens/rottenTokens-service";
+import DdosGuard from "../guards/ddos-middleware";
 
-const restartTime = process.env.TIME_RESTART_PERIODICTASKS ?? 5 * 60 * 1000
 
-//TASKS:
-function deletingRootenTokens() {
-    tokensRepository.readAll<RottenToken>().then((tokens) => {
-        tokens.forEach(token => {
-            if (token.expirationDate < new Date()) {
-                tokensRepository.deleteOne(token.id)
-            }
-        })
-    })
-    console.log('deletingRootenTokens complete');
-}
+const restartTime = process.env.TIME_RESTART_PERIODICTASKS_SECONDS ?? 10 * 1000
+
+
 class PeriodicTasks {
     tasks = [
-        deletingRootenTokens
+        // deleteAllCanceledTokens,
+        DdosGuard.deleteLogs
     ]
 
     async then(resolve: any, reject: any) {

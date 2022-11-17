@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { APIErrorResult, FieldError } from './types';
 
-export const guard400 = (req: Request, res: Response, next: NextFunction) => {
+export const code400 = (req: Request, res: Response, next: NextFunction) => {
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        // console.log('guard400:', errors);
+        // console.log('code400:', errors);
 
         const error: Array<FieldError> = errors.array({ onlyFirstError: true }).map(e => {
             return {

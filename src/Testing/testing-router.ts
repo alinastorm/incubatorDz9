@@ -1,14 +1,14 @@
-import express, { Express } from 'express';
+import express from 'express';
 import testingController from './testing-controller';
 
-//Testing
-export const testingRoutes = express.Router()
 
-testingRoutes.delete('/testing/all-data',
+export const testingRouter = express.Router()
+
+
+testingRouter.delete('/testing/all-data',
     testingController.deleteAll,
 )
-
-testingRoutes.all("*", (req: any, res, next) => {
+testingRouter.all("*", (req: any, res, next) => {
     // if (req.url === '/auth/logout') {        
     //     console.log("**********");        
     //     console.log('req.method:', req.method);
@@ -25,7 +25,8 @@ testingRoutes.all("*", (req: any, res, next) => {
     // const end = new Date().getTime();
     // console.log(`SecondsWay: ${end - start}ms`);
     next();
-})
+}
+)
 
 
 

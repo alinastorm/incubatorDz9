@@ -1,8 +1,11 @@
 import jwt from "jsonwebtoken"
-import { AccessTokenPayloadModel, LoginSuccessViewModel, RefreshTokenPayloadModel } from "../../Auth/types";
+import { LoginSuccessViewModel } from "../../Auth/Authentication/auth-types"
+import { AccessTokenPayloadModel, RefreshTokenPayloadModel } from "../../Auth/Tokenization/tokens-types"
+
 
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || 'JWT_ACCESS_SECRET'
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'JWT_REFRESH_SECRET'
+
 export const jwtService = {
 
     generateAccessToken(payload: AccessTokenPayloadModel) {
@@ -16,7 +19,7 @@ export const jwtService = {
     generateRefreshToken(payload: RefreshTokenPayloadModel) {
         const seconds = process.env.JWT_REFRESH_LIFE_TIME_SECONDS ?? 20
         // console.log('******REFRESH expiresIn:', `${seconds}s`);
-        
+
         const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: `${seconds}s` })
         return refreshToken
     },
@@ -35,6 +38,14 @@ export const jwtService = {
         } catch (error) {
             return null
         }
+    },
+    getIatFromToken(token: string) {
+        const payloadBase64 = token.split('.')[1]
+        const buff = Buffer.from(payloadBase64, 'base64');
+        const payloadText = buff.toString('ascii');
+        const payloadObject: { iat: number } = JSON.parse(payloadText)
+        const { iat } = payloadObject
+        return iat
     }
 
 

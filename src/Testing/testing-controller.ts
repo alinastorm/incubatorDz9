@@ -5,8 +5,9 @@ import usersRepository from '../Users/users-repository';
 
 import postsRepository from '../Posts/posts-repository';
 import blogsRepository from '../Blogs/blogs-repository';
-import authRepository from '../Auth/auth-repository';
+import authRepository from '../Auth/Authentication/auth-repository';
 import { HTTP_STATUSES, ResponseWithCode } from '../_common/services/http-service/types';
+import devicesRepository from '../Auth/DevicesSessions/deviceSession-repository';
 
 
 class TestingController {
@@ -16,6 +17,7 @@ class TestingController {
         await blogsRepository.deleteAll()
         await usersRepository.deleteAll()
         await authRepository.deleteAll()
+        await devicesRepository.deleteAll()
         res.status(HTTP_STATUSES.NO_CONTENT_204).send('All data is deleted')
     }
 

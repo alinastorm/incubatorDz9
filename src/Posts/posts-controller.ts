@@ -1,10 +1,11 @@
 import { Request } from 'express';
+
 import { Filter } from 'mongodb';
 import blogsRepository from '../Blogs/blogs-repository';
 import { BlogViewModel } from '../Blogs/types';
 import commentsRepository from '../Comments/comments-repository';
 import { CommentBdModel, CommentInputModel, CommentViewModel } from '../Comments/types';
-import { UserViewModel } from '../Users/types';
+import { UserViewModel } from '../Users/users-types';
 import usersRepository from '../Users/users-repository';
 import { Paginator, SearchPaginationModel } from '../_common/abstractions/Repository/types';
 import { HTTP_STATUSES, RequestWithBody, RequestWithHeaders, RequestWithParams, RequestWithParamsBody, RequestWithParamsQuery, RequestWithQuery, ResponseWithBodyCode, ResponseWithCode } from '../_common/services/http-service/types';
@@ -36,11 +37,11 @@ class PostsController {
         const { blogId, content, shortDescription, title } = req.body
         const blog = await blogsRepository.readOne<BlogViewModel>(blogId)
         if (!blog) return res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400)
-        const { name: blogName } = blog
 
+        const { name: blogName } = blog
         const createdAt = new Date().toISOString()
-        const query: Omit<PostViewModel, 'id'> = { blogId, blogName, content, createdAt, shortDescription, title }
-        const id: string = await postsRepository.createOne(query)
+        const element: Omit<PostViewModel, 'id'> = { blogId, blogName, content, createdAt, shortDescription, title }
+        const id: string = await postsRepository.createOne(element)
 
         const post: PostViewModel | null = await postsRepository.readOne(id)
         if (!post) return res.status(HTTP_STATUSES.BAD_REQUEST_400)
@@ -107,14 +108,14 @@ class PostsController {
         }
     }
     async createCommentsByPostId(
-        req: RequestWithParamsBody<{ postId: string }, CommentInputModel> & RequestWithHeaders<{ authorization: string }> & { userId: string },
+        req: RequestWithParamsBody<{ postId: string }, CommentInputModel> & RequestWithHeaders<{ authorization: string }> & { user: { userId: string } },
         res: ResponseWithBodyCode<CommentViewModel, 201 | 401 | 404>
     ) {
         const postId = req.params.postId
         const post = await postsRepository.readOne<CommentBdModel>(postId)
         if (!post) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
 
-        const userId = req.userId
+        const userId = req.user.userId
         const user = await usersRepository.readOne<UserViewModel>(userId)
         if (!user) return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
 

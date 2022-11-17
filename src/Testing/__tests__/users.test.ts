@@ -3,7 +3,7 @@ import request from "supertest"
 import DbMongo from "../../_common/services/mongoDb-service/mongoDb-adapter"
 import Ajv from "ajv"
 import { Response } from 'express';
-import { UserViewModel } from "../../Users/types"
+import { UserViewModel } from "../../Users/users-types"
 import { Paginator } from "../../_common/abstractions/Repository/types";
 import httpService from "../../_common/services/http-service/http-service";
 

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { Response } from 'express-serve-static-core';
 import { IncomingHttpHeaders } from 'node:http';
-import { IObject } from '../../types/types';
+
 
 export enum HTTP_STATUSES {
     OK_200 = 200,
@@ -11,6 +11,7 @@ export enum HTTP_STATUSES {
     UNAUTHORIZED_401 = 401,
     NO_ACCESS_CONTENT_403 = 403,
     NOT_FOUND_404 = 404,
+    TOO_MANY_REQUESTS_429 = 429,
     SERVER_ERROR_500 = 500
 }
 export type RequestWithParams<P> = Request<P>
@@ -30,3 +31,6 @@ export interface RequestWithHeaders<T extends IncomingHttpHeaders> extends Reque
 
 export type ResponseWithCode<C extends number> = Response<{}, {}, C>
 export type ResponseWithBodyCode<B, C extends number> = Response<B, {}, C>
+export interface ResponseWithCookies<T> extends Response {
+    cookies: T;
+}

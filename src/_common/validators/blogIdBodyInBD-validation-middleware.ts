@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { HTTP_STATUSES } from '../../_common/services/http-service/types';
-import blogsRepository from '../blogs-repository';
+import { HTTP_STATUSES } from '../services/http-service/types';
+import blogsRepository from '../../Blogs/blogs-repository';
 
 
 

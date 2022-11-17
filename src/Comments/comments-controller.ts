@@ -1,4 +1,5 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
+
 import commentsRepository from './comments-repository';
 import { CommentBdModel, CommentInputModel, CommentViewModel } from './types';
 import { BlogViewModel } from '../Blogs/types';
@@ -10,7 +11,7 @@ import { NoExtraProperties } from '../_common/types/types';
 
 class CommentsController {
 
-    async readAll(req: Request, res: Response) {
+    async readAll(req: Request, res: ResponseWithBodyCode<CommentBdModel[], 200>) {
         const result = await commentsRepository.readAll<CommentBdModel>()
         res.send(result)
     }
@@ -26,12 +27,12 @@ class CommentsController {
         res.status(HTTP_STATUSES.OK_200).send(mapComment)
     }
     async updateOne(
-        req: RequestWithParamsBody<{ commentId: string }, CommentInputModel> & RequestWithHeaders<{ authorization: string }> & { userId: string },
+        req: RequestWithParamsBody<{ commentId: string }, CommentInputModel> & RequestWithHeaders<{ authorization: string }> & { user: { userId: string } },
         res: ResponseWithCode<204 | 403 | 404>) {
 
         const { commentId } = req.params
         const content = req.body
-        const userId = req.userId
+        const userId = req.user.userId
         const comment = await commentsRepository.readOne<CommentBdModel>(commentId)
         if (!comment) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         if (comment.userId !== userId) return res.sendStatus(HTTP_STATUSES.NO_ACCESS_CONTENT_403)
@@ -41,11 +42,11 @@ class CommentsController {
             null
     }
     async deleteOne(
-        req: RequestWithParams<{ commentId: string }> & RequestWithHeaders<{ authorization: string }> & { userId: string },
+        req: RequestWithParams<{ commentId: string }> & RequestWithHeaders<{ authorization: string }> &  { user: { userId: string } },
         res: ResponseWithBodyCode<BlogViewModel, 204 | 403 | 404>
     ) {
         const { commentId } = req.params
-        const userId = req.userId
+        const userId = req.user.userId
         const comment = await commentsRepository.readOne<CommentBdModel>(commentId)
         if (!comment) return res.sendStatus(HTTP_STATUSES.NOT_FOUND_404)
         if (comment.userId !== userId) return res.sendStatus(HTTP_STATUSES.NO_ACCESS_CONTENT_403)

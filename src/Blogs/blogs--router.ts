@@ -1,8 +1,8 @@
 import express from 'express';
 import { nameBodyValidationMiddleware } from '../_common/validators/name-validation-middleware';
 import { youtubeUrlBodyValidationMiddleware } from '../_common/validators/youtubeUrl-validation-middleware';
-import { authorizationBasicMiddleware401 } from '../_common/validators/authBasic-validation-middleware';
-import { guard400 } from '../_common/validators/guard-middleware';
+import { BasicAuthorizationMiddleware } from '../_common/guards/BasicAuthHeaders-validation-middleware';
+import { code400 } from '../_common/validators/code400-middleware';
 import { searchNameTermQueryValidationMiddleware } from '../_common/validators/searchNameTerm-query-validation-middleware';
 import { pageNumberQueryValidationMiddleware } from '../_common/validators/pageNumber-validation-middleware';
 import { sortByBlogsQueryValidationMiddleware } from '../_common/validators/sortByBlogs-validation-middleware';
@@ -15,68 +15,68 @@ import { contentBodyValidationMiddleware } from '../_common/validators/content-v
 
 import { sortByPostsQueryValidationMiddleware } from '../_common/validators/sortByPosts-validation-middleware';
 import blogsController from './blogs-controller';
-import { blogIdParamInBDValidationMiddleware } from './validators/blogIdParamInBD-validation-middleware';
+import { blogIdParamInBDValidationMiddleware } from '../_common/validators/blogIdParamInBD-validation-middleware';
 
 
-export const blogsRoutes = express.Router()
+export const blogsRouter = express.Router()
 
 
-blogsRoutes.get(`/blogs`,
+blogsRouter.get(`/blogs`,
     searchNameTermQueryValidationMiddleware,
     pageNumberQueryValidationMiddleware,
     pageSizeQueryValidationMiddleware,
     sortByBlogsQueryValidationMiddleware,
     sortDirectionQueryValidationMiddleware,
-    blogsController.readAllOrByNamePaginationSort)
-
-blogsRoutes.post(`/blogs`,
-    authorizationBasicMiddleware401,
+    blogsController.readAllOrByNamePaginationSort
+)
+blogsRouter.post(`/blogs`,
+    BasicAuthorizationMiddleware,
     nameBodyValidationMiddleware,
     youtubeUrlBodyValidationMiddleware,
-    guard400,
-    blogsController.createOne)
-
-blogsRoutes.get(`/blogs/:blogId/posts`,
+    code400,
+    blogsController.createOne
+)
+blogsRouter.get(`/blogs/:blogId/posts`,
     blogIdParamUriValidationMiddleware,
     pageNumberQueryValidationMiddleware,
     pageSizeQueryValidationMiddleware,
     sortByPostsQueryValidationMiddleware,
     sortDirectionQueryValidationMiddleware,
-    guard400,
+    code400,
     blogIdParamInBDValidationMiddleware,
-    <any>blogsController.readAllPostsByBlogIdWithPaginationAndSort)
-
-blogsRoutes.post(`/blogs/:blogId/posts`,
-    authorizationBasicMiddleware401,
+    <any> blogsController.readAllPostsByBlogIdWithPaginationAndSort
+)
+blogsRouter.post(`/blogs/:blogId/posts`,
+    BasicAuthorizationMiddleware,
     blogIdParamUriValidationMiddleware,
     titleBodyValidationMiddleware,
     shortdescriptionBodyValidationMiddleware,
     contentBodyValidationMiddleware,
-    guard400,
+    code400,
     blogIdParamInBDValidationMiddleware,
-    blogsController.createPostsByBlogId)
-
-blogsRoutes.get(`/blogs/:blogId`,
+    blogsController.createPostsByBlogId
+)
+blogsRouter.get(`/blogs/:blogId`,
     blogIdParamUriValidationMiddleware,
-    guard400,
+    code400,
     blogIdParamInBDValidationMiddleware,
-    blogsController.readOne)
-
-blogsRoutes.put(`/blogs/:blogId`,
-    authorizationBasicMiddleware401,
+    blogsController.readOne
+)
+blogsRouter.put(`/blogs/:blogId`,
+    BasicAuthorizationMiddleware,
     blogIdParamUriValidationMiddleware,
     nameBodyValidationMiddleware,
     youtubeUrlBodyValidationMiddleware,
-    guard400,
+    code400,
     blogIdParamInBDValidationMiddleware,
-    blogsController.updateOne)
-
-blogsRoutes.delete(`/blogs/:blogId`,
-    authorizationBasicMiddleware401,
+    blogsController.updateOne
+)
+blogsRouter.delete(`/blogs/:blogId`,
+    BasicAuthorizationMiddleware,
     blogIdParamUriValidationMiddleware,
-    guard400,
+    code400,
     blogIdParamInBDValidationMiddleware,
-    blogsController.deleteOne)
+    blogsController.deleteOne
+)
 
 
- 

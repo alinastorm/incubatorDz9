@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
-import { HTTP_STATUSES } from '../../_common/services/http-service/types';
-import postsRepository from '../posts-repository';
+import { HTTP_STATUSES } from '../services/http-service/types';
+import postsRepository from '../../Posts/posts-repository';
 
 
 

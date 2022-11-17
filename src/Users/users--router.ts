@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { authorizationBasicMiddleware401 } from '../_common/validators/authBasic-validation-middleware';
-import { guard400 } from '../_common/validators/guard-middleware';
+import { BasicAuthorizationMiddleware } from '../_common/guards/BasicAuthHeaders-validation-middleware';
+import { code400 } from '../_common/validators/code400-middleware';
 import { searchLoginTermQueryValidationMiddleware } from '../_common/validators/searchLoginTerm-query-validation-middleware';
 import { searchEmailTermQueryValidationMiddleware } from '../_common/validators/searchEmailTerm-query-validation-middleware';
 import { sortDirectionQueryValidationMiddleware } from '../_common/validators/sortDirection-validation-middleware';
@@ -15,29 +15,30 @@ import { userIdParamUriValidationMiddleware } from '../_common/validators/userId
 import usersController from './users-controller';
 
 
-export const usersRoutes = express.Router()
+export const usersRouter = express.Router()
 
 
-usersRoutes.get(`/users`,
+usersRouter.get(`/users`,
     searchLoginTermQueryValidationMiddleware,
     searchEmailTermQueryValidationMiddleware,
     pageNumberQueryValidationMiddleware,
     pageSizeQueryValidationMiddleware,
     sortByUsersQueryValidationMiddleware,
     sortDirectionQueryValidationMiddleware,
-    guard400,
-    <any>usersController.readAllPagination)
-
-usersRoutes.post(`/users`,
-    authorizationBasicMiddleware401,
+    code400,
+    <any> usersController.readAllPagination
+)
+usersRouter.post(`/users`,
+    BasicAuthorizationMiddleware,
     loginBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     emailBodyValidationMiddleware,
-    guard400,
-    usersController.createOne)
-
-usersRoutes.delete(`/users/:userId`,
-    authorizationBasicMiddleware401,
+    code400,
+    usersController.createOne
+)
+usersRouter.delete(`/users/:userId`,
+    BasicAuthorizationMiddleware,
     userIdParamUriValidationMiddleware,
-    guard400,
-    usersController.deleteOne)
+    code400,
+    usersController.deleteOne
+)

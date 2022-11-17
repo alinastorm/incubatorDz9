@@ -3,8 +3,8 @@ import { titleBodyValidationMiddleware } from '../_common/validators/title-valid
 import { postIdParamValidationMiddleware } from '../_common/validators/postIdParam-validation-middleware';
 import { contentBodyValidationMiddleware } from '../_common/validators/content-validation-middleware';
 import { shortdescriptionBodyValidationMiddleware } from '../_common/validators/shortdescription-validation-middleware';
-import { authorizationBasicMiddleware401 } from '../_common/validators/authBasic-validation-middleware';
-import { guard400 } from '../_common/validators/guard-middleware';
+import { BasicAuthorizationMiddleware } from '../_common/guards/BasicAuthHeaders-validation-middleware';
+import { code400 } from '../_common/validators/code400-middleware';
 import { pageNumberQueryValidationMiddleware } from '../_common/validators/pageNumber-validation-middleware';
 import { pageSizeQueryValidationMiddleware } from '../_common/validators/pageSize-validation-middleware';
 import { sortByPostsQueryValidationMiddleware } from '../_common/validators/sortByPosts-validation-middleware';
@@ -12,74 +12,72 @@ import { sortDirectionQueryValidationMiddleware } from '../_common/validators/so
 
 import { commentsInputModelSchemaValidationMiddleware } from '../_common/validators/commentsInputSchema-validation-middleware';
 import { sortByCommentsQueryValidationMiddleware } from '../_common/validators/sortByComments-validation-middleware';
-import { authHeadersJwtMiddleware } from '../_common/validators/authHeadersJwtAccessToken-middleware';
+import { authHeadersJwt401 } from '../_common/guards/JwtAccessTokenHeaders-middleware';
 import postsController from './posts-controller';
-import { postParamIdInBDValidationMiddleware } from './validators/PostsIdParamInBD-validation-middleware';
-import { blogIdBodyInBDValidationMiddleware } from '../Blogs/validators/blogIdBodyInBD-validation-middleware';
-
-const mainRoute = 'posts'
-
-export const postsRoutes = express.Router()
+import { postParamIdInBDValidationMiddleware } from '../_common/validators/PostsIdParamInBD-validation-middleware';
+import { blogIdBodyInBDValidationMiddleware } from '../_common/validators/blogIdBodyInBD-validation-middleware';
 
 
-postsRoutes.get(`/posts/:postId/comments`,
+export const postsRouter = express.Router()
+
+
+postsRouter.get(`/posts/:postId/comments`,
     pageNumberQueryValidationMiddleware,
     pageSizeQueryValidationMiddleware,
     sortByCommentsQueryValidationMiddleware,
     sortDirectionQueryValidationMiddleware,
-    guard400,
+    code400,
     postParamIdInBDValidationMiddleware,
-    <any>postsController.getCommentsByPostIdPaginationSort)
-
-postsRoutes.post(`/posts/:postId/comments`,
-    <any>authHeadersJwtMiddleware,
+    <any> postsController.getCommentsByPostIdPaginationSort
+)
+postsRouter.post(`/posts/:postId/comments`,
+    <any> authHeadersJwt401,
     postIdParamValidationMiddleware,
     commentsInputModelSchemaValidationMiddleware,
-    guard400,
+    code400,
     // postParamIdInBDValidationMiddleware,
-    <any>postsController.createCommentsByPostId)
-
-postsRoutes.get(`/posts`,
+    <any> postsController.createCommentsByPostId
+)
+postsRouter.get(`/posts`,
     pageNumberQueryValidationMiddleware,
     pageSizeQueryValidationMiddleware,
     sortByPostsQueryValidationMiddleware,
     sortDirectionQueryValidationMiddleware,
-    guard400,
-    <any>postsController.readAllPaginationSort)
-
-postsRoutes.post(`/posts`,
-    authorizationBasicMiddleware401,
+    code400,
+    <any> postsController.readAllPaginationSort
+)
+postsRouter.post(`/posts`,
+    BasicAuthorizationMiddleware,
     titleBodyValidationMiddleware,
     shortdescriptionBodyValidationMiddleware,
     contentBodyValidationMiddleware,
     blogIdBodyInBDValidationMiddleware,
-    guard400,
+    code400,
     // bloggerBodyIdInBDValidationMiddleware,
-    postsController.createOne)
-
-postsRoutes.get(`/posts/:postId`,
+    postsController.createOne
+)
+postsRouter.get(`/posts/:postId`,
     postIdParamValidationMiddleware,
-    guard400,
+    code400,
     postParamIdInBDValidationMiddleware,
-    postsController.readOne)
-
-postsRoutes.put(`/posts/:postId`,
-    authorizationBasicMiddleware401,
+    postsController.readOne
+)
+postsRouter.put(`/posts/:postId`,
+    BasicAuthorizationMiddleware,
     postIdParamValidationMiddleware,
     titleBodyValidationMiddleware,
     shortdescriptionBodyValidationMiddleware,
     contentBodyValidationMiddleware,
     blogIdBodyInBDValidationMiddleware,
-    guard400,
+    code400,
     postParamIdInBDValidationMiddleware,
     // bloggerBodyIdInBDValidationMiddleware,
-    postsController.updateOne)
-
-postsRoutes.delete(`/posts/:postId`,
-    authorizationBasicMiddleware401,
+    postsController.updateOne
+)
+postsRouter.delete(`/posts/:postId`,
+    BasicAuthorizationMiddleware,
     postIdParamValidationMiddleware,
-    guard400,
+    code400,
     postParamIdInBDValidationMiddleware,
-    postsController.deleteOne)
-
-
+    postsController.deleteOne
+)

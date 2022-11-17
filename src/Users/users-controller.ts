@@ -1,10 +1,9 @@
-
 import cryptoService from '../_common/services/crypto-service';
 import usersRepository from './users-repository';
 import { Filter } from 'mongodb';
-import authRepository from '../Auth/auth-repository';
-import { UserInputModel, UsersSearchPaginationModel, UserViewModel } from './types';
-import { AuthViewModel } from '../Auth/types';
+import authRepository from '../Auth/Authentication/auth-repository';
+import { UserInputModel, UsersSearchPaginationModel, UserViewModel } from './users-types';
+import { AuthViewModel } from '../Auth/Authentication/auth-types';
 import { BlogViewModel } from '../Blogs/types';
 import { HTTP_STATUSES, RequestWithBody, RequestWithParams, RequestWithQuery, ResponseWithBodyCode } from '../_common/services/http-service/types';
 import { Paginator, SearchPaginationModel } from '../_common/abstractions/Repository/types';
@@ -31,7 +30,6 @@ class UserController {
 
         res.status(HTTP_STATUSES.OK_200).send(result)
     }
-
     async createOne(
         req: RequestWithBody<UserInputModel>,
         res: ResponseWithBodyCode<Omit<UserViewModel,"confirm">, 201 | 404>
@@ -39,8 +37,8 @@ class UserController {
 
         const { email, login, password } = req.body
         const createdAt = new Date().toISOString()
-        const queryUser: Omit<UserViewModel, 'id'> = { email, login, createdAt, confirm: false }
-        const userId: string = await usersRepository.createOne(queryUser)
+        const element: Omit<UserViewModel, 'id'> = { email, login, createdAt, confirm: false }
+        const userId: string = await usersRepository.createOne(element)
 
         const passwordHash = await cryptoService.generatePasswordHash(password)
         const queryAuth: Omit<AuthViewModel, "id"> = { passwordHash, userId, createdAt }
@@ -53,7 +51,6 @@ class UserController {
         const result = other
         res.status(HTTP_STATUSES.CREATED_201).send(result)
     }
-
     async deleteOne(
         req: RequestWithParams<{ id: string }>,
         res: ResponseWithBodyCode<BlogViewModel, 204 | 404>

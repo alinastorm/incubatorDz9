@@ -1,7 +1,7 @@
 import { Collection, MongoClient, Document, ObjectId, Filter } from 'mongodb'
 import { Paginator } from '../../abstractions/Repository/types';
 import { IObject } from '../../types/types';
-import { AdapterType } from './types';
+import { AdapterSetupType, AdapterType } from './types';
 
 
 // Connection URL
@@ -11,33 +11,8 @@ const clientMongo = new MongoClient(urlMongo)
 const dbName = process.env.mongoDbName || 'learning';
 const database = clientMongo.db(dbName);
 
-class DbMongoService implements AdapterType {
-    //async constructor
-    async then(resolve: any, reject: any) {
-        console.log('DbMongoService ... ');        
-        try {
-            await this.connect()
-            await this.ping()
-            resolve()
-        } catch (error) {
-            clientMongo.close()
-            console.log('DbMongoService error:', error);
-        }
-    }
+export class DbMongoService implements AdapterType {
 
-    async connect() {
-        // connect the client
-        await clientMongo.connect();
-        console.log('Mongo-adapter connected to db-server');
-    }
-    async ping() {
-        //connect db and verify connection    
-        await database.command({ ping: 1 })
-        console.log(`Mongo-adapter connected to database: ${dbName}`);
-    }
-    async disconnect() {
-        await clientMongo.close();
-    }
     async readAll(collectionName: string, filter?: Filter<IObject>, sortBy = "_id", sortDirection: 1 | -1 = 1) {
 
         const collection: Collection<Document> = database.collection(collectionName)
@@ -149,7 +124,36 @@ class DbMongoService implements AdapterType {
         const collection: Collection<Document> = database.collection(collectionName)
         const result = await collection.deleteMany({})
         return result.acknowledged
-    } 
+    }
+}
+
+class MongoServiceSetup implements AdapterSetupType {
+    //async constructor
+    async then(resolve: any, reject: any) {
+        console.log('DbMongoService ... ');
+        try {
+            await this.connect()
+            await this.ping()
+            resolve()
+        } catch (error) {
+            clientMongo.close()
+            console.log('DbMongoService error:', error);
+        }
+    }
+    async connect() {
+        // connect the client
+        await clientMongo.connect();
+        console.log('Mongo-adapter connected to db-server');
+    }
+    async ping() {
+        //connect db and verify connection    
+        await database.command({ ping: 1 })
+        console.log(`Mongo-adapter connected to database: ${dbName}`);
+    }
+    async disconnect() {
+        await clientMongo.close();
+    }
+    async reConnect() { }
 }
 //@ts-ignore 
-export default await new DbMongoService()
+export default await new MongoServiceSetup()
