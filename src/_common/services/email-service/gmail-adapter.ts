@@ -4,6 +4,7 @@ import SendmailTransport from "nodemailer/lib/sendmail-transport";
 
 
 
+console.log('EmailService ... ');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -16,7 +17,6 @@ const transporter = nodemailer.createTransport({
 class EmailService {
 
     constructor(private transporter: Transporter<SendmailTransport.SentMessageInfo>) {
-        console.log('EmailService ... ');
         console.log("EmailService started");
     }
 
