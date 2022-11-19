@@ -19,7 +19,7 @@ class HttpService {
     app: core.Express = express()
     httpServer!: http.Server
     httpsServer!: https.Server
-    httpPort: number | string = process.env.HTTP_PORT || 80
+    httpPort: number | string = process.env.PORT || process.env.HTTP_PORT || 80
     httpsPort: number | string = process.env.HTTPS_PORT || 443
 
     //async constructor
@@ -28,8 +28,8 @@ class HttpService {
         try {
             this.setMiddlewares()
             this.setRoutes()
-            this.runHttpsServer()
             this.runHttpServer()
+            // this.runHttpsServer()
             resolve()
         } catch (error) {
             this.stopServer()
