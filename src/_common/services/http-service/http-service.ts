@@ -15,11 +15,22 @@ import { registrationRouter } from '../../../Auth/Registration/registration--rou
 
 
 class HttpService {
-
+    constructor() {
+        console.log('HttpService ... ');
+        try {
+            this.setMiddlewares()
+            this.setRoutes()
+            this.runHttpServer()
+            // this.runHttpsServer()
+        } catch (error) {
+            this.stopServer()
+            console.log('HttpService error:', error);
+        }
+    }
     app: core.Express = express()
     httpServer!: http.Server
     httpsServer!: https.Server
-    httpPort: number | string = process.env.PORT || process.env.HTTP_PORT || 80 
+    httpPort: number | string = process.env.PORT || process.env.HTTP_PORT || 80
     httpsPort: number | string = process.env.HTTPS_PORT || 443
 
     //async constructor
@@ -88,4 +99,4 @@ class HttpService {
 
 }
 //@ts-ignore
-export default await new HttpService()
+export default new HttpService()

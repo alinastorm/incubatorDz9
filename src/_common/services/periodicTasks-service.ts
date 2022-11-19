@@ -14,7 +14,9 @@ class PeriodicTasks {
         DdosGuard.deleteLogs.bind(DdosGuard)
     ]
 
-
+    constructor() {
+        this.run()
+    }
     async then(resolve: any, reject: any) {
         console.log('PeriodicTasks ...');
 
@@ -39,4 +41,4 @@ class PeriodicTasks {
 }
 
 //@ts-ignore
-export default await new PeriodicTasks()
+export default new PeriodicTasks()

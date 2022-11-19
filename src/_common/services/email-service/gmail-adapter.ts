@@ -16,7 +16,9 @@ class EmailService {
 
     transport!: nodemailer.Transporter<SMTPTransport.SentMessageInfo>
 
-    constructor(private options: SMTPTransport | SMTPTransport.Options | string) { }
+    constructor(private options: SMTPTransport | SMTPTransport.Options | string) {
+        this.createTransporter()
+     }
     //async constructor
     async then(resolve: any, reject: any) {
         console.log('EmailService ... ');
@@ -76,4 +78,4 @@ class EmailService {
     }
 }
 //@ts-ignore
-export default await new EmailService(options)
+export default new EmailService(options)
