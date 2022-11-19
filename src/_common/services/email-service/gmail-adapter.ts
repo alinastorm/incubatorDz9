@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 class EmailService {
 
     constructor(private transporter: Transporter<SendmailTransport.SentMessageInfo>) {
-        console.log("EmailService started");
+        console.log("EmailService started", process.env.SMTP_USER, process.env.SMTP_PASSWORD);
     }
 
 
