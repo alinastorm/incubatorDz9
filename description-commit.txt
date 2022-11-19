@@ -1,3 +1,4 @@
 1.0.0 init
 1.0.1 refactor + fit: dz h09
 1.0.2 refactor 
+1.0.3 fit test rout 
