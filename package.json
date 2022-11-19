@@ -10,7 +10,8 @@
     "testSilent": "jest --silent --runInBand",
     "dev": "nodemon -e ts --exec \"npm run compile\"",
     "compile": "tsc && node --experimental-specifier-resolution=node -r dotenv/config dist/main.js",
-    "build": "tsc"
+    "build": "tsc",
+    "vercel build":"tsc"
   },
   "repository": {
     "type": "git",
