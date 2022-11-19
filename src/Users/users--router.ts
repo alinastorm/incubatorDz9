@@ -29,7 +29,7 @@ usersRouter.get(`/users`,
     <any> usersController.readAllPagination
 )
 usersRouter.post(`/users`,
-    BasicAuthorizationMiddleware,
+<any> BasicAuthorizationMiddleware,
     loginBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     emailBodyValidationMiddleware,
@@ -37,7 +37,7 @@ usersRouter.post(`/users`,
     usersController.createOne
 )
 usersRouter.delete(`/users/:userId`,
-    BasicAuthorizationMiddleware,
+<any>BasicAuthorizationMiddleware,
     userIdParamUriValidationMiddleware,
     code400,
     usersController.deleteOne

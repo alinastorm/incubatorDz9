@@ -47,7 +47,7 @@ postsRouter.get(`/posts`,
     <any> postsController.readAllPaginationSort
 )
 postsRouter.post(`/posts`,
-    BasicAuthorizationMiddleware,
+<any>BasicAuthorizationMiddleware,
     titleBodyValidationMiddleware,
     shortdescriptionBodyValidationMiddleware,
     contentBodyValidationMiddleware,
@@ -63,7 +63,7 @@ postsRouter.get(`/posts/:postId`,
     postsController.readOne
 )
 postsRouter.put(`/posts/:postId`,
-    BasicAuthorizationMiddleware,
+<any>BasicAuthorizationMiddleware,
     postIdParamValidationMiddleware,
     titleBodyValidationMiddleware,
     shortdescriptionBodyValidationMiddleware,
@@ -75,7 +75,7 @@ postsRouter.put(`/posts/:postId`,
     postsController.updateOne
 )
 postsRouter.delete(`/posts/:postId`,
-    BasicAuthorizationMiddleware,
+<any>BasicAuthorizationMiddleware,
     postIdParamValidationMiddleware,
     code400,
     postParamIdInBDValidationMiddleware,

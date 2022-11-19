@@ -1,6 +1,6 @@
 import express from 'express';
 import { nameBodyValidationMiddleware } from '../_common/validators/name-validation-middleware';
-import { youtubeUrlBodyValidationMiddleware } from '../_common/validators/youtubeUrl-validation-middleware';
+import { websiteUrlBodyValidationMiddleware } from '../_common/validators/websiteUrl-validation-middleware';
 import { BasicAuthorizationMiddleware } from '../_common/guards/BasicAuthHeaders-validation-middleware';
 import { code400 } from '../_common/validators/code400-middleware';
 import { searchNameTermQueryValidationMiddleware } from '../_common/validators/searchNameTerm-query-validation-middleware';
@@ -16,6 +16,7 @@ import { contentBodyValidationMiddleware } from '../_common/validators/content-v
 import { sortByPostsQueryValidationMiddleware } from '../_common/validators/sortByPosts-validation-middleware';
 import blogsController from './blogs-controller';
 import { blogIdParamInBDValidationMiddleware } from '../_common/validators/blogIdParamInBD-validation-middleware';
+import { descriptionBodyValidationMiddleware } from '../_common/validators/description-body-validation-middleware';
 
 
 export const blogsRouter = express.Router()
@@ -30,9 +31,10 @@ blogsRouter.get(`/blogs`,
     blogsController.readAllOrByNamePaginationSort
 )
 blogsRouter.post(`/blogs`,
-    BasicAuthorizationMiddleware,
+    <any>BasicAuthorizationMiddleware,
     nameBodyValidationMiddleware,
-    youtubeUrlBodyValidationMiddleware,
+    websiteUrlBodyValidationMiddleware,
+    descriptionBodyValidationMiddleware,
     code400,
     blogsController.createOne
 )
@@ -47,7 +49,7 @@ blogsRouter.get(`/blogs/:blogId/posts`,
     <any> blogsController.readAllPostsByBlogIdWithPaginationAndSort
 )
 blogsRouter.post(`/blogs/:blogId/posts`,
-    BasicAuthorizationMiddleware,
+    <any> BasicAuthorizationMiddleware,
     blogIdParamUriValidationMiddleware,
     titleBodyValidationMiddleware,
     shortdescriptionBodyValidationMiddleware,
@@ -63,16 +65,16 @@ blogsRouter.get(`/blogs/:blogId`,
     blogsController.readOne
 )
 blogsRouter.put(`/blogs/:blogId`,
-    BasicAuthorizationMiddleware,
+<any>BasicAuthorizationMiddleware,
     blogIdParamUriValidationMiddleware,
     nameBodyValidationMiddleware,
-    youtubeUrlBodyValidationMiddleware,
+    websiteUrlBodyValidationMiddleware,
     code400,
     blogIdParamInBDValidationMiddleware,
     blogsController.updateOne
 )
 blogsRouter.delete(`/blogs/:blogId`,
-    BasicAuthorizationMiddleware,
+<any>BasicAuthorizationMiddleware,
     blogIdParamUriValidationMiddleware,
     code400,
     blogIdParamInBDValidationMiddleware,

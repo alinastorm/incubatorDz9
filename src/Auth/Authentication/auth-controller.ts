@@ -23,13 +23,15 @@ class AuthController {
             ResponseWithCookies<{ refreshToken: string }> &
             ResponseWithBodyCode<APIErrorResult, 401>
     ) {
-        const { login, password } = req.body
+        console.log('req.cookies', req.cookies.refreshToken);
+
+        const { loginOrEmail, password } = req.body
         // Проверяем существование юзера с указанным логином
-        const users: UserViewModel[] | [] = await usersRepository.readAll<UserViewModel>({ login })
+        const users: UserViewModel[] | [] = await usersRepository.readAll<UserViewModel>({ $or: [{ login: loginOrEmail }, { email: loginOrEmail }] })
         const user = users[0]
-        if (!user) return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        if (!user) return res.status(HTTP_STATUSES.UNAUTHORIZED_401).send("No login")
         // Проверяем подтверждение почты пользователя
-        if (user.confirm !== true) return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        if (user.confirm !== true) return res.status(HTTP_STATUSES.UNAUTHORIZED_401).send("Not confirm email")
         // Достаем hash юзера
         // Проверяем существование hash в bd
         const userId = user.id

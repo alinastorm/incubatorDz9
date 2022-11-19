@@ -1,21 +1,21 @@
-import { Collection, MongoClient, Document, ObjectId, Filter } from 'mongodb'
+import { Collection, Document, ObjectId, Filter } from 'mongodb'
 import { Paginator } from '../../abstractions/Repository/types';
 import { IObject } from '../../types/types';
-import { AdapterSetupType, AdapterType } from './types';
+import { AdapterType } from './types';
+import mongoDbClient from "./mongoDbClient"
+// // Connection URL
+// const urlMongo = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017'
+// const clientMongo = new MongoClient(urlMongo)
+// // Database Name
+// const dbName = process.env.mongoDbName || 'learning';
+// const database = clientMongo.db(dbName);
 
+class DbMongoService implements AdapterType {
 
-// Connection URL
-const urlMongo = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017'
-const clientMongo = new MongoClient(urlMongo)
-// Database Name
-const dbName = process.env.mongoDbName || 'learning';
-const database = clientMongo.db(dbName);
-
-export class DbMongoService implements AdapterType {
 
     async readAll(collectionName: string, filter?: Filter<IObject>, sortBy = "_id", sortDirection: 1 | -1 = 1) {
 
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
 
         if (filter) {
             return (await collection
@@ -39,7 +39,7 @@ export class DbMongoService implements AdapterType {
             })
     }
     async readCount(collectionName: string, filter?: Filter<IObject>) {
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         if (filter) return await collection.countDocuments(filter)
         return await collection.countDocuments()
 
@@ -60,7 +60,7 @@ export class DbMongoService implements AdapterType {
         }
 
 
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         if (filter) {
             const items = (await collection
                 .find(filter)
@@ -91,14 +91,14 @@ export class DbMongoService implements AdapterType {
         return result
     }
     async readOne(collectionName: string, id: string) {
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         const result: any = await collection.findOne({ _id: new ObjectId(id) })
         if (!result) return result
         const { _id, ...other } = result
         return { id: _id.toString(), ...other }
     }
     async createOne(collectionName: string, element: Document) {
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         // const id = uuidv4()
         // element.id = id
         const result = (await collection.insertOne(element)).insertedId.toString()
@@ -106,54 +106,25 @@ export class DbMongoService implements AdapterType {
         return result
     }
     async updateOne(collectionName: string, id: string, data: any) {
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: data })
         return result.modifiedCount === 1
     }
     async replaceOne(collectionName: string, id: string, element: IObject) {
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         const result = await collection.replaceOne({ _id: new ObjectId(id) }, element)
         return result.modifiedCount === 1
     }
     async deleteOne(collectionName: string, id: string) {
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         const result = await collection.deleteOne({ _id: new ObjectId(id) })
         return result.deletedCount === 1
     }
     async deleteAll(collectionName: string) {
-        const collection: Collection<Document> = database.collection(collectionName)
+        const collection: Collection<Document> = mongoDbClient.database.collection(collectionName)
         const result = await collection.deleteMany({})
         return result.acknowledged
     }
 }
 
-class MongoServiceSetup implements AdapterSetupType {
-    //async constructor
-    async then(resolve: any, reject: any) {
-        console.log('DbMongoService ... ');
-        try {
-            await this.connect()
-            await this.ping()
-            resolve()
-        } catch (error) {
-            clientMongo.close()
-            console.log('DbMongoService error:', error);
-        }
-    }
-    async connect() {
-        // connect the client
-        await clientMongo.connect();
-        console.log('Mongo-adapter connected to db-server');
-    }
-    async ping() {
-        //connect db and verify connection    
-        await database.command({ ping: 1 })
-        console.log(`Mongo-adapter connected to database: ${dbName}`);
-    }
-    async disconnect() {
-        await clientMongo.close();
-    }
-    async reConnect() { }
-}
-//@ts-ignore 
-export default await new MongoServiceSetup()
+export default new DbMongoService()

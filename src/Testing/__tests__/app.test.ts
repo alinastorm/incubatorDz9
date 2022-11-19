@@ -1,6 +1,6 @@
 // const request = require("supertest")
 import request from "supertest"
-import DbMongo from "../../_common/services/mongoDb-service/mongoDb-adapter"
+import clientMongoDb from "../../_common/services/mongoDb-service/mongoDbClient"
 import Ajv from "ajv"
 import { HTTP_STATUSES } from "../../_common/services/http-service/types"
 import httpService from "../../_common/services/http-service/http-service"
@@ -17,8 +17,8 @@ describe("/posts", () => {
     httpService.runHttpsServer()
   })
   afterAll(async () => {
-    await DbMongo.disconnect()
-    httpService.stop()
+    await clientMongoDb.disconnect()
+    httpService.stopServer()
   })
 
   test('Wrong route', async () => {

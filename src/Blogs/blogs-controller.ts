@@ -28,9 +28,9 @@ class BlogController {
         res: ResponseWithBodyCode<BlogViewModel, 201 | 404>
     ) {
 
-        const { name, youtubeUrl } = req.body
+        const { name, websiteUrl, description } = req.body
         const createdAt = new Date().toISOString()
-        const element: Omit<BlogViewModel, "id"> = { createdAt, name, youtubeUrl }
+        const element: Omit<BlogViewModel, "id"> = { createdAt, name, websiteUrl, description }
 
         const id: string = await blogsRepository.createOne(element)
         const users: BlogViewModel | null = await blogsRepository.readOne(id)

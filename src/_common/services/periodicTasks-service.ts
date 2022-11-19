@@ -1,18 +1,19 @@
 //TODO реализовать удаление не активированных пользователей
 //TODO реализовать удаление link code активации
 
-import { deleteAllCanceledTokens } from "../../Auth/Tokenization/RottenTokens/rottenTokens-service";
 import DdosGuard from "../guards/ddos-middleware";
 
 
-const restartTime = process.env.TIME_RESTART_PERIODICTASKS_SECONDS ?? 10 * 1000
+const restartTimeSeconds = process.env.TIME_RESTART_PERIODICTASKS_SECONDS ?? 10 * 1000
+const restartTimeMSeconds = +restartTimeSeconds * 1000
 
 
 class PeriodicTasks {
     tasks = [
         // deleteAllCanceledTokens,
-        DdosGuard.deleteLogs
+        DdosGuard.deleteLogs.bind(DdosGuard)
     ]
+
 
     async then(resolve: any, reject: any) {
         console.log('PeriodicTasks ...');
@@ -29,11 +30,11 @@ class PeriodicTasks {
         console.log('PeriodicTasks started');
 
         setInterval(() => {
-            this.tasks.forEach(handler => {
+            this.tasks.forEach((handler: any) => {
                 handler()
             })
         }
-            , +restartTime)
+            , restartTimeMSeconds)
     }
 }
 

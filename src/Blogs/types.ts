@@ -1,6 +1,8 @@
 export interface BlogInputModel {
     name: string//    maxLength: 15
-    youtubeUrl: string // maxLength: 100     pattern: ^ https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$
+    description:string // maxLength: 500
+    websiteUrl: string // maxLength: 100     pattern: ^ https://([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$
+
 }
 export interface BlogPostInputModel {
     title: string//    maxLength: 30
@@ -11,6 +13,7 @@ export interface BlogPostInputModel {
 export interface BlogViewModel {
     id: string
     name: string// max 15 TODO вроде уже нет ограничения
-    youtubeUrl: string
+    description:string // maxLength: 500
+    websiteUrl: string
     createdAt: string//TODO в дз не обязательный в интерфейсе
 }

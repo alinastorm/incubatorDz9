@@ -1,7 +1,7 @@
 import { body, checkSchema } from 'express-validator';
 
 export const schemaLoginInputValidationMiddleware = checkSchema({
-    "login": {
+    "loginOrEmail": {
         isString: true
     },
     "password": {

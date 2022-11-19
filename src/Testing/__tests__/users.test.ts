@@ -1,8 +1,7 @@
 // const request = require("supertest")
 import request from "supertest"
-import DbMongo from "../../_common/services/mongoDb-service/mongoDb-adapter"
+import clientMongoDb from "../../_common/services/mongoDb-service/mongoDbClient"
 import Ajv from "ajv"
-import { Response } from 'express';
 import { UserViewModel } from "../../Users/users-types"
 import { Paginator } from "../../_common/abstractions/Repository/types";
 import httpService from "../../_common/services/http-service/http-service";
@@ -20,8 +19,8 @@ describe("/users", () => {
         httpService.runHttpsServer()
     })
     afterAll(async () => {
-        await DbMongo.disconnect()
-        httpService.stop()
+        await clientMongoDb.disconnect()
+        httpService.stopServer()
     })
 
     test('All delete', async () => {

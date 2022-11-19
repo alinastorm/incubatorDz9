@@ -37,7 +37,7 @@ class UserController {
 
         const { email, login, password } = req.body
         const createdAt = new Date().toISOString()
-        const element: Omit<UserViewModel, 'id'> = { email, login, createdAt, confirm: false }
+        const element: Omit<UserViewModel, 'id'> = { email, login, createdAt, confirm: true }
         const userId: string = await usersRepository.createOne(element)
 
         const passwordHash = await cryptoService.generatePasswordHash(password)

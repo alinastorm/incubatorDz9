@@ -3,7 +3,8 @@ import Mail from "nodemailer/lib/mailer"
 import SMTPTransport from "nodemailer/lib/smtp-transport"
 
 
-const transport: SMTPTransport | SMTPTransport.Options | string = {
+
+const options: SMTPTransport | SMTPTransport.Options | string = {
     service: 'gmail',
     auth: {
         user: process.env.SMTP_USER || '',
@@ -13,15 +14,16 @@ const transport: SMTPTransport | SMTPTransport.Options | string = {
 
 class EmailService {
 
-    transporter!: nodemailer.Transporter<SMTPTransport.SentMessageInfo>
+    transport!: nodemailer.Transporter<SMTPTransport.SentMessageInfo>
 
-    constructor(private transport: SMTPTransport | SMTPTransport.Options | string) { }
+    constructor(private options: SMTPTransport | SMTPTransport.Options | string) { }
     //async constructor
     async then(resolve: any, reject: any) {
         console.log('EmailService ... ');
         try {
-            this.createTransporter
-            resolve()
+            this.createTransporter()
+            Object.assign(this, { then: null })
+            resolve(this)
         } catch (error) {
             this.stop()
             console.log('EmailService error:', error);
@@ -29,10 +31,10 @@ class EmailService {
     }
 
     createTransporter() {
-        const transport = nodemailer.createTransport(this.transport)
+        const transport = nodemailer.createTransport(this.options)
         if (!transport) throw Error('EmailService createTransporter error')
-        this.transporter = transport
-        console.log("Email transport:", this.transport);
+        this.transport = transport
+        console.log("EmailService started");
     }
     sendActivationMail(to: string | Mail.Address | (string | Mail.Address)[] | undefined, link: string) {
         const mailOptions: Mail.Options = {
@@ -49,7 +51,7 @@ class EmailService {
                  `
         }
 
-        const info = this.transporter.sendMail(mailOptions, (err) => { })
+        const info = this.transport.sendMail(mailOptions, (err) => { })
 
 
     }
@@ -62,16 +64,16 @@ class EmailService {
             html: message
         }
 
-        const info = this.transporter.sendMail(mailOptions, (err, data) => {
-            if (err) throw Error(err.message)
+        const info = this.transport.sendMail(mailOptions, (err, data) => {
+            if (err) console.log("EmailService error:", err)
             if (data) console.log('transporter.sendMail data:', data)
 
         })
 
     }
     stop() {
-        this.transporter.close()
+        this.transport.close()
     }
 }
 //@ts-ignore
-export default await new EmailService(transport)
+export default await new EmailService(options)

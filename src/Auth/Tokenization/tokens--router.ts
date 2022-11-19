@@ -1,17 +1,19 @@
 import express from 'express';
+import ddosGuard from '../../_common/guards/ddos-middleware';
 import { JwtRefreshTokenCookies401 } from '../../_common/guards/JwtRefreshTokenCookies-middleware';
 import tokensController from './tokens-controller';
 
 
 
 
-export const authRouter = express.Router()
+export const tokensRouter = express.Router()
 
-
-authRouter.post(`/auth/refresh-token`,
+// tokensRouter.all("*",
+//     ddosGuard.checkRequest,
+//     ddosGuard.logRequest,
+// )
+tokensRouter.post(`/auth/refresh-token`,
     JwtRefreshTokenCookies401,
     // authCookiesRefreshTokenIsRottenMiddleware,
     <any> tokensController.refreshTokens
 )
-
-

@@ -4,12 +4,17 @@ import { authHeadersJwt401 } from '../../_common/guards/JwtAccessTokenHeaders-mi
 import { code400 } from '../../_common/validators/code400-middleware';
 import { schemaLoginInputValidationMiddleware } from '../../_common/validators/schemaLoginInput-validation-middleware';
 import authController from './auth-controller';
+import ddosGuard from '../../_common/guards/ddos-middleware';
 
 
 
 
 export const authRouter = express.Router()
 
+authRouter.all("/auth/*",
+    ddosGuard.checkRequest.bind(ddosGuard),
+    ddosGuard.logRequest.bind(ddosGuard),
+)
 authRouter.post(`/auth/login`,
     schemaLoginInputValidationMiddleware,
     code400,

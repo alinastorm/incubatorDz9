@@ -5,24 +5,28 @@ import { loginBodyValidationMiddleware } from '../../_common/validators/login-bo
 import { passwordBodyValidationMiddleware } from '../../_common/validators/password-body-validation-middleware';
 import { emailBodyValidationMiddleware } from '../../_common/validators/email-validation-middleware';
 import { codeConfirmBodyValidationMiddleware } from '../../_common/validators/codeConfirm-body-validation-middleware';
+import ddosGuard from '../../_common/guards/ddos-middleware';
 
 
 
-export const authRouter = express.Router()
-
-authRouter.post(`/auth/registration`,
+export const registrationRouter = express.Router()
+// registrationRouter.all("/auth/*",
+//     ddosGuard.checkRequest,
+//     ddosGuard.logRequest,
+// )
+registrationRouter.post(`/auth/registration`,
     loginBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     emailBodyValidationMiddleware,
     code400,
     <any> registrationController.registration
 )
-authRouter.post(`/auth/registration-confirmation`,
+registrationRouter.post(`/auth/registration-confirmation`,
     codeConfirmBodyValidationMiddleware,
     code400,
     registrationController.confirmRegistration
 )
-authRouter.post(`/auth/registration-email-resending`,
+registrationRouter.post(`/auth/registration-email-resending`,
     emailBodyValidationMiddleware,//Email of already registered but not confirmed user
     code400,
     <any> registrationController.resendEmail
