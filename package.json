@@ -5,13 +5,10 @@
   "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "start": "npm run build & node --experimental-specifier-resolution=node -r dotenv/config dist/main.js",
-    "test": "jest --runInBand",
-    "testSilent": "jest --silent --runInBand",
-    "dev": "nodemon -e ts --exec \"npm run compile\"",
-    "compile": "tsc && node --experimental-specifier-resolution=node -r dotenv/config dist/main.js",
+    "watch": "tsc -w",
+    "dev": "nodemon --inspect dist/main.js",
     "build": "tsc",
-    "vercel build":"tsc"
+    "start": "node dist/main.js"
   },
   "repository": {
     "type": "git",
