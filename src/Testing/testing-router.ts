@@ -7,7 +7,7 @@ export const testingRouter = express.Router()
 
 testingRouter.get('/',
     (req: Request, res: Response) => {
-res.send("Hallo Samurai")
+res.send("Hallo Samurai2")
     }
 )
 testingRouter.delete('/testing/all-data',
