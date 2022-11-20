@@ -1,13 +1,13 @@
 import { Db, MongoClient } from 'mongodb'
 // import { createRequire } from 'node:module';
-// Connection URL
-const urlMongo = process.env.MONGO_URL || "mongodb+srv://AlexGr:mth0F2JOfBhmJlk4@cluster0.ojk6ayv.mongodb.net/?retryWrites=true&w=majority" || 'mongodb://127.0.0.1:27017'
-// Database Name
-const dbName = process.env.MONGO_DB_NAME || 'learning';
-// Client
-const clientMongo = new MongoClient(urlMongo)
-// Database
-const database = clientMongo.db(dbName);
+// // Connection URL
+// const urlMongo = process.env.MONGO_URL || "mongodb+srv://AlexGr:mth0F2JOfBhmJlk4@cluster0.ojk6ayv.mongodb.net/?retryWrites=true&w=majority" || 'mongodb://127.0.0.1:27017'
+// // Database Name
+// const dbName = process.env.MONGO_DB_NAME || 'learning';
+// // Client
+// const clientMongo = new MongoClient(urlMongo)
+// // Database
+// const database = clientMongo.db(dbName);
 
 class MongoDbClient {
 
