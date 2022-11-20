@@ -56,7 +56,6 @@ testingRouter.get('/testing/mail', async (req: Request, res: Response) => {
         transporter.verify(function (error, success) {
             if (error) {
                 console.log(error);
-                reject(error);
             } else {
                 console.log("Server is ready to take our messages");
                 resolve(success);
@@ -66,22 +65,25 @@ testingRouter.get('/testing/mail', async (req: Request, res: Response) => {
     let result
     await new Promise((resolve, reject) => {
         // send mail
-        transporter.sendMail(mailOptions, (err, info) => {
-            if (err) {
-                console.error(err);
-                reject(err);
-            } else {
-                result = info
-                console.log(info);
-                resolve(info);
-            }
-        });
+        try {
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) {
+                    result=err
+                    console.error(err);
+                    res.json(result)
+                    reject(false);
+                } else {
+                    result = info
+                    res.json(result)
+                    console.log(info);
+                    resolve(true);
+                }
+            });
+            
+        } catch (error) {
+            result=error
+            res.json(result)            
+        }
     });
 
-    res.json(result)
 })
-
-
-
-
-

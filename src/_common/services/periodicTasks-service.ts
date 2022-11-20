@@ -5,7 +5,7 @@ import DdosGuard from "../guards/ddos-middleware";
 
 
 const restartTimeSeconds = process.env.TIME_RESTART_PERIODICTASKS_SECONDS ?? 10 * 1000
-const restartTimeMSeconds = +restartTimeSeconds * 1000
+const restartTimeMSeconds = +restartTimeSeconds * 10000
 
 
 class PeriodicTasks {
