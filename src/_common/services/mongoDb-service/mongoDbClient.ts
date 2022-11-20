@@ -16,8 +16,8 @@ class MongoDbClient {
         private clientMongo: MongoClient,
         public database: Db,
     ) {
-         this.connect()
-         this.ping()
+        //  this.connect()
+        //  this.ping()
      }
 
     //async constructor with await only
