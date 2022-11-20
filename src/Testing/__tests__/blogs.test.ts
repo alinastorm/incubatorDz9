@@ -15,7 +15,7 @@ function check(schema: any, body: any) {
 }
 describe("/blogs", () => {
     beforeAll(() => {
-        httpService.runHttpsServer()
+        httpService.runHttpServer()
     })
     afterAll(async () => {
         await clientMongoDb.disconnect()
