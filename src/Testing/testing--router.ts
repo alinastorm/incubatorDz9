@@ -9,7 +9,7 @@ export const testingRouter = express.Router()
 
 testingRouter.get('/',
     (req: Request, res: Response) => {
-        res.send(`Hallo Samurai ${process.env.APP_NAME}`)
+        res.send(`Hallo Samurai: ${process.env.APP_NAME}`)
     }
 )
 testingRouter.delete('/testing/all-data',

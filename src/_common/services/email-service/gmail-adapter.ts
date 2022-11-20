@@ -6,22 +6,42 @@ import SendmailTransport from "nodemailer/lib/sendmail-transport";
 
 
 const transporter = nodemailer.createTransport({
-    port: 465,
-    host: "smtp.gmail.com",
+    service: 'gmail',
     auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-    },
-    secure: true,
+        pass: "MiziraQu1",
+    }
+    // port: 587,
+    // host: "smtp.gmail.com",
+    // auth: {
+    //     user: process.env.SMTP_USER,
+    //     pass: process.env.SMTP_PASSWORD,
+    // },
+    // secure: true,
 });
 
 class EmailService {
 
     constructor(private transporter: Transporter<SendmailTransport.SentMessageInfo>) {
         console.log("EmailService started", process.env.SMTP_USER, process.env.SMTP_PASSWORD);
+        this.verify()
+
     }
 
-
+    async verify() {
+        await new Promise((resolve, reject) => {
+            // verify connection configuration
+            transporter.verify(function (error, success) {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                } else {
+                    console.log("Server is ready to take our messages");
+                    resolve(success);
+                }
+            });
+        });
+    }
     sendActivationMail(to: string | Mail.Address | (string | Mail.Address)[] | undefined, link: string) {
         const mailOptions: Mail.Options = {
             from: `${process.env.APP_NAME} <${process.env.SMTP_USER}>`,
@@ -49,18 +69,7 @@ class EmailService {
             text: '',
             html: message
         }
-        await new Promise((resolve, reject) => {
-            // verify connection configuration
-            transporter.verify(function (error, success) {
-                if (error) {
-                    console.log(error);
-                    reject(error);
-                } else {
-                    console.log("Server is ready to take our messages");
-                    resolve(success);
-                }
-            });
-        });
+
 
         await new Promise((resolve, reject) => {
             // send mail
