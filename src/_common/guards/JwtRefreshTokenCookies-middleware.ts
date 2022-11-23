@@ -1,7 +1,6 @@
-import { NextFunction, Response } from 'express';
+import { NextFunction } from 'express';
 import { HTTP_STATUSES, RequestWithCookies, ResponseWithBodyCode, ResponseWithCode } from '../services/http-service/types';
 import { jwtService } from '../services/jwt-service';
-import { APIErrorResult } from '../validators/types';
 
 /** Проверка рефереш токена на валидность и тухлость */
 export const JwtRefreshTokenCookies401 = async (
@@ -12,6 +11,7 @@ export const JwtRefreshTokenCookies401 = async (
 
     //Проверка наличия cookies авторизации
     const reqRefreshToken = req.cookies.refreshToken
+    console.log(reqRefreshToken);   
     if (!reqRefreshToken) return res.status(401).send("no refreshToken")
 
     //проверяем валидность, тухлость, состав

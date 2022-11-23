@@ -12,6 +12,8 @@ import { postsRouter } from '../../../Posts/posts--router';
 import { testingRouter } from '../../../Testing/testing--router';
 import { usersRouter } from '../../../Users/users--router';
 import { registrationRouter } from '../../../Auth/Registration/registration--router';
+import { devicesRouter } from '../../../Auth/DevicesSessions/deviceSession--router';
+import { tokensRouter } from '../../../Auth/Tokenization/tokens--router';
 
 
 class HttpService {
@@ -89,6 +91,8 @@ class HttpService {
             authRouter,
             commentsRouter,
             registrationRouter,
+            devicesRouter,
+            tokensRouter
         ])
     }
     stopServer() {

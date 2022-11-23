@@ -8,9 +8,8 @@ import authRepository from './auth-repository';
 import { AuthViewModel, LoginInputModel, LoginSuccessViewModel, MeViewModel } from './auth-types';
 import { v4 as uuidv4 } from 'uuid'
 import { DeviceBdModel } from '../DevicesSessions/deviceSession-types';
-import deviceRepository from "../DevicesSessions/deviceSession-repository"
+import deviceSessionsRepository from "../DevicesSessions/deviceSessions-repository"
 import { RefreshTokenPayloadModel } from '../Tokenization/tokens-types';
-import deviceSessionRepository from '../DevicesSessions/deviceSession-repository';
 
 class AuthController {
     /** Try login user to the system*/
@@ -23,7 +22,6 @@ class AuthController {
             ResponseWithCookies<{ refreshToken: string }> &
             ResponseWithBodyCode<APIErrorResult, 401>
     ) {
-        console.log('req.cookies', req.cookies.refreshToken);
 
         const { loginOrEmail, password } = req.body
         // Проверяем существование юзера с указанным логином
@@ -47,7 +45,8 @@ class AuthController {
         const accessToken: LoginSuccessViewModel = jwtService.generateAccessToken({ userId })
         const deviceId: string = uuidv4()// Id of connected device session
         const refreshToken: string = jwtService.generateRefreshToken({ userId, deviceId })
-        const maxAgeSeconds = process.env.JWT_REFRESH_LIFE_TIME_SECONDS || 20// maxAge: 20 milliseconds
+        const maxAgeSeconds = process.env.JWT_REFRESH_LIFE_TIME_SECONDS || console.log("No JWT_REFRESH_LIFE_TIME_SECONDS");
+        
         const maxAgeMiliSeconds = +maxAgeSeconds * 1000
         // Записываем device Session        
         const ip: string = req.ip // IP address of device during signing in 
@@ -55,7 +54,7 @@ class AuthController {
         const iat: number = jwtService.getIatFromToken(refreshToken) //iat from token
         const lastActiveDate: string = iat.toString()//Date of the last generating of refresh/access tokens 
         const element: Omit<DeviceBdModel, "id"> = { lastActiveDate, deviceId, ip, title, userId }
-        deviceRepository.createOne(element)
+        deviceSessionsRepository.createOne(element)
 
         // Отправка токенов Access Refresh
         res.cookie("refreshToken", refreshToken, { maxAge: maxAgeMiliSeconds, httpOnly: true, secure: true })
@@ -75,9 +74,9 @@ class AuthController {
         // createOneCanceledToken(reqRefreshToken)
 
         const { deviceId, userId } = req.user
-        const deviceSessions = await deviceSessionRepository.readAll<DeviceBdModel>({ deviceId, userId })
+        const deviceSessions = await deviceSessionsRepository.readAll<DeviceBdModel>({ deviceId, userId })
         deviceSessions.forEach(async ({ id }) => {
-            await deviceSessionRepository.deleteOne(id)
+            await deviceSessionsRepository.deleteOne(id)
         })
         res.sendStatus(HTTP_STATUSES.NO_CONTENT_204)
     }

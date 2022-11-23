@@ -4,7 +4,7 @@ export interface RegistrationCodeViewModel {
     email: string
     code: string
     expirationDate: Date
-    restartTime: Date
+    // restartTime: Date
 }
 export interface RegistrationConfirmationCodeModel {
     /**Code that be sent via Email inside link */

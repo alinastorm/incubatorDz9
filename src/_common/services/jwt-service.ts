@@ -9,7 +9,9 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'JWT_REFRESH_SECRET
 export const jwtService = {
 
     generateAccessToken(payload: AccessTokenPayloadModel) {
-        const seconds = process.env.JWT_ACCESS_LIFE_TIME_SECONDS ?? 10
+        const seconds = process.env.JWT_ACCESS_LIFE_TIME_SECONDS ?? console.log("No JWT_ACCESS_LIFE_TIME_SECONDS");
+        
+        
         // console.log('******ACCESS expiresIn:', `${seconds}s`);
 
         const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: `${seconds}s` })
@@ -17,7 +19,7 @@ export const jwtService = {
         return result
     },
     generateRefreshToken(payload: RefreshTokenPayloadModel) {
-        const seconds = process.env.JWT_REFRESH_LIFE_TIME_SECONDS ?? 20
+        const seconds = process.env.JWT_REFRESH_LIFE_TIME_SECONDS ?? console.log("JWT_REFRESH_LIFE_TIME_SECONDSS");
         // console.log('******REFRESH expiresIn:', `${seconds}s`);
 
         const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: `${seconds}s` })

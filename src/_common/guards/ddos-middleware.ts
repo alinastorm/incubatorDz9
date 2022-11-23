@@ -24,11 +24,11 @@ export class DdosGuard {
         })
         this.requests[ip + url].push(expirationDate)
 
-        console.log('DDOS logRequest requests after add:', this.requests[ip + url]);
+        // console.log('DDOS logRequest requests after add:', this.requests[ip + url]);
         //Очистка просроченных
         this.deleteLogs()
 
-        console.log('DDOS logRequest requests after delete:', this.requests[ip + url]);
+        // console.log('DDOS logRequest requests after delete:', this.requests[ip + url]);
 
         next()
     }
@@ -38,11 +38,11 @@ export class DdosGuard {
         res: ResponseWithCode<429>,
         next: NextFunction
     ) {
-        console.log('DDOS checkRequest requests:', this.requests);
+        // console.log('DDOS checkRequest requests:', this.requests);
         const ip: string = req.ip
         const url: string = req.url
-        const count: number = this.requests[`${ip}${url}`].length
-        if (count === 5) res.sendStatus(HTTP_STATUSES.TOO_MANY_REQUESTS_429)
+        const count: number = this.requests[`${ip}${url}`]?.length
+        if (count >=6) return res.sendStatus(HTTP_STATUSES.TOO_MANY_REQUESTS_429)
 
         next()
     }

@@ -1,7 +1,7 @@
 import { HTTP_STATUSES, RequestWithCookies, RequestWithHeaders, ResponseWithBodyCode, ResponseWithCode } from '../../_common/services/http-service/types';
 import { jwtService } from '../../_common/services/jwt-service';
 
-import deviceSessionRepository from '../DevicesSessions/deviceSession-repository';
+import deviceSessionRepository from '../DevicesSessions/deviceSessions-repository';
 import { DeviceBdModel } from '../DevicesSessions/deviceSession-types';
 import { RefreshTokenPayloadModel } from './tokens-types';
 
@@ -21,16 +21,16 @@ class TokensController {
             RequestWithCookies<{ refreshToken: string }> &
             ResponseWithCode<401>
     ) {
-        //проверяем есть ли сессия соответствующуя дате(iat) и deviceIs из рефреш токена
+        //проверяем есть ли сессия в бд соответствующуя из рефреш токена дате(iat) и deviceId 
         const refreshToken = req.cookies.refreshToken
         const { userId, deviceId } = req.user
         const iat: number = jwtService.getIatFromToken(refreshToken) //iat from token
         const lastActiveDate = iat.toString()
         const deviceSessionsByUserDeviceDate = await deviceSessionRepository.readAll<DeviceBdModel>({ userId, deviceId, lastActiveDate })
-        const deviceSession = deviceSessionsByUserDeviceDate[0]
+        const deviceSessionBd: DeviceBdModel = deviceSessionsByUserDeviceDate[0]
         const deviceSessionsByDevice = await deviceSessionRepository.readAll<DeviceBdModel>({ userId, deviceId })
-        if (!deviceSession) {
-            // проверка  на перехват сессии . Будет другая дата
+        // проверка  на перехват сессии . Будет другая дата
+        if (!deviceSessionBd) {
             if (deviceSessionsByDevice) {
                 deviceSessionsByDevice.forEach(async (session) => {
                     const id = session.id
@@ -44,19 +44,19 @@ class TokensController {
         //TODO Проверка смены страны по ip нужен сервис определения// const ip: string = req.ip // IP address of device during signing in 
         // if (deviceSession.ip != ip || deviceSession.title != title) {
 
-        //проверяем соотвествует ли title запроса сессии в бд
-        const title: string = req.headers['user-agent']// Device name: for example Chrome 105 (received by parsing http header "user-agent") 
-        if (deviceSession.title != title) {
-            // проверка  на перехват сессии . Будет другой ip или title
-            if (deviceSessionsByDevice) {
-                deviceSessionsByDevice.forEach(async (session) => {
-                    const id = session.id
-                    await deviceSessionRepository.deleteOne(id)
-                })
-                //TODO send danger email токен перехвачен ip или title другой. Сессии этого устройства разорваны
-            }
-            return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
-        }
+        // //проверяем соотвествует ли текущий title из req, сохраненной сессии в бд.
+        // const reqTitle: string = req.headers['user-agent']// Device name: for example Chrome 105 (received by parsing http header "user-agent") 
+        // if (deviceSessionBd.title != reqTitle) {
+        //     // проверка  на перехват сессии . Будет другой ip или title
+        //     if (deviceSessionsByDevice) {
+        //         deviceSessionsByDevice.forEach(async (session) => {
+        //             const id = session.id
+        //             await deviceSessionRepository.deleteOne(id)
+        //         })
+        //         //TODO send danger email токен перехвачен ip или title другой. Сессии этого устройства разорваны
+        //     }
+        //     return res.sendStatus(HTTP_STATUSES.UNAUTHORIZED_401)
+        // }
         //Генерируем токены
         const seconds = process.env.JWT_REFRESH_LIFE_TIME_SECONDS ?? 20
         const newRefreshToken = jwtService.generateRefreshToken({ userId, deviceId })
@@ -64,9 +64,10 @@ class TokensController {
         //обновляем сессию
         const newIat = jwtService.getIatFromToken(newRefreshToken)
         const newLastActiveDate = newIat.toString()
-        const id = deviceSession.id
-        const data = { ...deviceSession, lastActiveDate: newLastActiveDate }
-        await deviceSessionRepository.updateOne<DeviceBdModel>(id, data)
+        const id = deviceSessionBd.id
+        const updateData = { lastActiveDate: newLastActiveDate }
+        // const data = { ...deviceSessionBd, lastActiveDate: newLastActiveDate }
+        await deviceSessionRepository.updateOne<DeviceBdModel>(id, updateData)
         //deprecated //добавляем в списаные
         // const reqRefreshToken = req.cookies.refreshToken
         // createOneCanceledToken(reqRefreshToken)

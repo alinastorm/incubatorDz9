@@ -8,10 +8,6 @@ import tokensController from './tokens-controller';
 
 export const tokensRouter = express.Router()
 
-// tokensRouter.all("*",
-//     ddosGuard.checkRequest,
-//     ddosGuard.logRequest,
-// )
 tokensRouter.post(`/auth/refresh-token`,
     JwtRefreshTokenCookies401,
     // authCookiesRefreshTokenIsRottenMiddleware,

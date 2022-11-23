@@ -12,8 +12,8 @@ import ddosGuard from '../../_common/guards/ddos-middleware';
 export const authRouter = express.Router()
 
 authRouter.all("/auth/*",
-    ddosGuard.checkRequest.bind(ddosGuard),
     ddosGuard.logRequest.bind(ddosGuard),
+    ddosGuard.checkRequest.bind(ddosGuard),
 )
 authRouter.post(`/auth/login`,
     schemaLoginInputValidationMiddleware,

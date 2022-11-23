@@ -19,3 +19,4 @@
 1.0.18 try
 1.0.19 try
 1.0.32 refactor DDOS clear logs
+1.0.34 fit:DZ9

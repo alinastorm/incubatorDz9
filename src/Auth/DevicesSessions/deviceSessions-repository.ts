@@ -3,8 +3,8 @@ import mongoDbAdapter from "../../_common/services/mongoDb-service/mongoDb-adapt
 import { AdapterType } from "../../_common/services/mongoDb-service/types";
 
 
-class DeviceRepository extends Repository {
+class DeviceSessionsRepository extends Repository {
     constructor(collectionName: string, dataService: AdapterType) { super(collectionName, dataService) }
 }
 
-export default new DeviceRepository("deviceSessions", mongoDbAdapter)
+export default new DeviceSessionsRepository("deviceSessions", mongoDbAdapter)

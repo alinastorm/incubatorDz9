@@ -14,7 +14,10 @@ export const registrationRouter = express.Router()
 //     ddosGuard.checkRequest,
 //     ddosGuard.logRequest,
 // )
+
 registrationRouter.post(`/auth/registration`,
+    // ddosGuard.logRequest.bind(ddosGuard),
+    // ddosGuard.checkRequest.bind(ddosGuard),
     loginBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     emailBodyValidationMiddleware,
