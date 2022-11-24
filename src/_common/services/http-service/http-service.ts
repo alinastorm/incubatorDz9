@@ -96,8 +96,8 @@ class HttpService {
         ])
     }
     stopServer() {
-        this.httpServer.close()
-        this.httpsServer.close()
+        this.httpServer?.close()
+        this.httpsServer?.close()
     }
 
 
