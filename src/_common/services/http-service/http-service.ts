@@ -23,7 +23,7 @@ class HttpService {
             this.setMiddlewares()
             this.setRoutes()
             this.runHttpServer()
-            this.runHttpsServer()
+            // this.runHttpsServer()
         } catch (error) {
             this.stopServer()
             console.log('HttpService error:', error);

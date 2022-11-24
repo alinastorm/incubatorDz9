@@ -21,3 +21,4 @@
 1.0.32 refactor DDOS clear logs
 1.0.34 fit:DZ9
 1.0.35 fix:http service stop
+1.0.36 fix:disable https for vercel
